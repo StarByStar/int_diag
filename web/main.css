@@ -4,3 +4,28 @@ background: #525252;  /* fallback for old browsers */
 background: -webkit-linear-gradient(to right, #3d72b4, #525252);  /* Chrome 10-25, Safari 5.1-6 */
 background: linear-gradient(to right, #3d72b4, #525252); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 	}
+
+#Agreement
+{
+	width: 420px;
+	padding: 7px 7px;
+	margin: 15px 15px;
+	border: none;
+	border-radius: 6px;
+	font-size: 42px;
+	text-align: center;
+	font-family: 'Roboto', sans-serif;
+}
+
+#Start
+{
+	width: 436px;
+	padding: 7px 7px;
+	margin: 15px 15px;
+	border-radius: 4px;
+	font-size: 22px;
+	font-family: 'Roboto', sans-serif;
+
+
+
+}
