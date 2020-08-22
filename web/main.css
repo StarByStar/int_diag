@@ -17,12 +17,30 @@ background: linear-gradient(to right, #3d72b4, #525252); /* W3C, IE 10+/ Edge, F
 	font-family: 'Roboto', sans-serif;
 }
 
-#Start
-{
-	width: 436px;
-	padding: 7px 7px;
-	margin: 15px 15px;
-	border-radius: 4px;
-	font-size: 22px;
-	font-family: 'Roboto', sans-serif;
+.button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    width: 435px;
+    padding: 7px 7px;
+    margin: 15px 15px;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 24px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+.start {
+    background-color: #FFFACD; 
+    color: black; 
+    border: 2px solid #FFFFF0;
+}
+
+.button:hover {
+    background-color: #2E8B57; /* Green */
+    color: white;
 }
