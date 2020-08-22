@@ -9,11 +9,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <input id ="Agreement" type="text" placeholder="Номер договора">
-    <button id = "Start" class ="button start">Начать диагностику</button>
-    <div class="Status">
-
+    <input id ="agreement" type="text" placeholder="Номер договора">
+    <button id = "start" class ="button start" onclick="start_diag()">Начать диагностику</button>
+    <div id ="status">
+        
     </div>
-
+    <script>
+        async function start_diag() {
+        let agr = document.getElementById('agreement').value;
+        let value = await eel.diag_start(agr)();
+        document.getElementById('status').innerHTML = value;
+        }
+    </script>
 </body>
 </html>
