@@ -1,4 +1,5 @@
 import eel
+import subprocess
 
 eel.init("web")
 
@@ -57,11 +58,40 @@ def get_city(agr):
         return 'unknown'
 
 
-#Запуск диагностики при клике на кнопку
+# пинг ya.ru
+# https://pyneng.readthedocs.io/ru/latest/book/12_useful_modules/subprocess.html
+def cmd_ping_ya():
+    ping = subprocess.run(['ping', 'ya.ru', '-n', '30', '-l', '1200'], stdout=subprocess.PIPE)
+    print(ping)
+
+
+# пинг dns google, заменить на эртх
+def cmd_ping_dns():
+    ping = subprocess.run(['ping', '8.8.8.8', '-n', '30', '-l', '1200'], stdout=subprocess.PIPE)
+    print(ping)
+
+
+#Трассировка mail.ru
+def tracert_mail():
+    tracert = subprocess.run(['tracert', 'mail.ru'], stdout=subprocess.PIPE)
+    print(tracert)
+
+
+#Трассировка vk.com
+def tracert_vk():
+    tracert = subprocess.run(['tracert', 'vk.com'], stdout=subprocess.PIPE)
+    print(tracert)
+
+
+#запуск диагностики при клике на кнопку
 @eel.expose
 def diag_start(agr):
-    agreement_check(agr)
+    #agreement_check(agr)
     city = get_city(agr)
+    cmd_ping_ya()
+    cmd_ping_dns()
+    tracert_mail()
+    tracert_vk()
     print(agr)
     print(city)
     return agr
