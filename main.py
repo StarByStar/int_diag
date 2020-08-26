@@ -83,15 +83,43 @@ def tracert_vk():
     print(tracert)
 
 
+#Диспетчер задач
+def tasklist():
+    task = subprocess.run('tasklist', stdout=subprocess.PIPE)
+    print(task)
+
+
+#ipconfig -all
+def ipconfig():
+    ipconf = subprocess.run(['ipconfig', '-all'], stdout=subprocess.PIPE)
+    print(ipconf)
+
+
+#netstat -e
+def nestat():
+    nestate = subprocess.run(['netstat', '-e'], stdout=subprocess.PIPE)
+    print(nestate)
+
+
+#netsh wlan show interface
+def wlanif():
+    iface = subprocess.run(['netsh', 'wlan', 'show', 'interface'], stdout=subprocess.PIPE)
+    print(iface)
+
+
 #запуск диагностики при клике на кнопку
 @eel.expose
 def diag_start(agr):
     #agreement_check(agr)
     city = get_city(agr)
-    cmd_ping_ya()
-    cmd_ping_dns()
-    tracert_mail()
-    tracert_vk()
+    #cmd_ping_ya()
+    #cmd_ping_dns()
+    #tracert_mail()
+    #tracert_vk()
+    tasklist()
+    ipconfig()
+    nestat()
+    wlanif()
     print(agr)
     print(city)
     return agr
