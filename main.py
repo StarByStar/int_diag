@@ -3,20 +3,11 @@ import json
 import requests
 from diagnostic import *
 
-eel.init("web")
-
-
-# проверка валидности номера договора
-def agreement_check(agr):
-    assert agr.isdigit(), "Номер договора должен быть положительным числом"
-    assert len(str(agr)) == 12, "Номер договора должен состоять из 12 чисел"
-
-
-# определение города Клиента по № договора
-def get_city(agr):
-    cities = \
+# Справочник для хранения ключа (по № договора),
+# города, имени st сервера, iperf сервера
+cities = \
     {10: ['ufa', 'st2.ufa.ertelecom.ru', 'iperf.ufa.ertelecom.ru'],
-     12: ['yola', 'st2.yola.ertelecom.ru', 'iperf.yola.ertelecom.ru' ],
+     12: ['yola', 'st2.yola.ertelecom.ru', 'iperf.yola.ertelecom.ru'],
      16: ['kazan', 'st2.kazan.ertelecom.ru', 'iperf.kazan.ertelecom.ru'],
      17: ['chel', 'st2.chel.ertelecom.ru', 'iperf.chel.ertelecom.ru'],
      18: ['izhevsk', 'st2.izhevsk.ertelecom.ru', 'iperf.izhevsk.ertelecom.ru'],
@@ -54,10 +45,21 @@ def get_city(agr):
      77: ['msk', 'st2.msk.ertelecom.ru', 'iperf.msk.ertelecom.ru'],
      78: ['spb', 'st2.spb.ertelecom.ru', 'iperf.spb.ertelecom.ru']
      }
+
+
+eel.init("web")
+# проверка валидности номера договора
+def agreement_check(agr):
+    assert agr.isdigit(), "Номер договора должен быть положительным числом"
+    assert len(str(agr)) == 12, "Номер договора должен состоять из 12 чисел"
+
+
+# Определение города, dns, iperf Клиента по № договора
+def get_city(agr, cities):
     if int(agr[:2]) in cities:
-        return cities[int(agr[:2])][0]
+        return cities[int(agr[:2])]
     else:
-        return 'unknown'
+        return ['unknown', '8.8.8.8', 'iperf.perm.ertelecom.ru']
 
 
 #Кодирование в JSON формат
@@ -77,7 +79,7 @@ def json_code(agr, city, os_name, task, ipconf, netstats, netstate, check_host, 
     return jsonData
 
 
-#Сохранение json в файл для отладки
+# Сохранение json в файл для отладки
 def save_to_file(json_data):
     report = "report.json"
     file = open(report, mode='w', encoding='UTF-8')
@@ -85,7 +87,7 @@ def save_to_file(json_data):
     file.close()
 
 
-#запуск диагностики при клике на кнопку
+# Запуск диагностики при клике на кнопку
 @eel.expose
 def diag_start(agr):
     #agreement_check(agr)
@@ -93,27 +95,26 @@ def diag_start(agr):
     #ping_dns()
     #tracert_mail()
     #tracert_vk()
-    #nestat()
-    #wlanif()
-    #print()
     #print(tracert_vk())
-    print(ping_gw())
+    #print(ping_gw())
+    print(ping_dns(get_city(agr, cities)[1]))
     print(json.loads
-                (json_code
-                              (
-                               agr,
-                               get_city(agr),
-                               os_name(),
-                               tasklist(),
-                               ipconfig(),
-                               nestats(),
-                               nestate(),
-                               check_host(),
-                               wlanif()
-                               )
-                )
-          )
-    #ave_to_file(json_code(agr, city, task, ipconf, netstate))
+                    (json_code
+                                  (
+                                   agr,
+                                   get_city(agr, cities)[0],
+                                   os_name(),
+                                   tasklist(),
+                                   ipconfig(),
+                                   nestats(),
+                                   nestate(),
+                                   check_host(),
+                                   wlanif()
+                                   )
+                    )
+              )
+    #save_to_file(json_code(agr, city, task, ipconf, netstate))
     return agr
+
 
 eel.start("main.html", size=(500, 600))

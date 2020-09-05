@@ -12,13 +12,13 @@ def os_name():
 # Пинг ya.ru
 # https://pyneng.readthedocs.io/ru/latest/book/12_useful_modules/subprocess.html
 def ping_ya():
-    ping = subprocess.check_output(['ping', 'ya.ru', '-n', '30', '-l', '1200'])
+    ping = subprocess.check_output(['ping', 'ya.ru', '-n', '10', '-l', '1200'])
     return str(ping, 'utf-8')
 
 
 # Пинг DNS (заменить на st эртх)
-def ping_dns():
-    ping = subprocess.check_output(['ping', '8.8.8.8', '-n', '30', '-l', '1200'])
+def ping_dns(dns):
+    ping = subprocess.check_output(['ping', dns, '-n', '10', '-l', '1200'])
     return str(ping, 'utf-8')
 
 
