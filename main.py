@@ -1,5 +1,7 @@
 import eel
-import subprocess
+import json
+import requests
+from diagnostic import *
 
 eel.init("web")
 
@@ -58,70 +60,60 @@ def get_city(agr):
         return 'unknown'
 
 
-# пинг ya.ru
-# https://pyneng.readthedocs.io/ru/latest/book/12_useful_modules/subprocess.html
-def cmd_ping_ya():
-    ping = subprocess.run(['ping', 'ya.ru', '-n', '30', '-l', '1200'], stdout=subprocess.PIPE)
-    print(ping)
+#Кодирование в JSON формат
+def json_code(agr, city, os_name, task, ipconf, netstats, netstate, check_host, wlan):
+    report_struct = {
+        "agreement": agr,
+        "city": city,
+        "os version": os_name,
+        "tasklist": task,
+        "ipconfig": ipconf,
+        "netstat -s": netstats,
+        "netstat -e": netstate,
+        "host": check_host,
+        "netsh wlan": wlan
+    }
+    jsonData = json.dumps(report_struct)
+    return jsonData
 
 
-# пинг dns google, заменить на эртх
-def cmd_ping_dns():
-    ping = subprocess.run(['ping', '8.8.8.8', '-n', '30', '-l', '1200'], stdout=subprocess.PIPE)
-    print(ping)
-
-
-#Трассировка mail.ru
-def tracert_mail():
-    tracert = subprocess.run(['tracert', 'mail.ru'], stdout=subprocess.PIPE)
-    print(tracert)
-
-
-#Трассировка vk.com
-def tracert_vk():
-    tracert = subprocess.run(['tracert', 'vk.com'], stdout=subprocess.PIPE)
-    print(tracert)
-
-
-#Диспетчер задач
-def tasklist():
-    task = subprocess.run('tasklist', stdout=subprocess.PIPE)
-    print(task)
-
-
-#ipconfig -all
-def ipconfig():
-    ipconf = subprocess.run(['ipconfig', '-all'], stdout=subprocess.PIPE)
-    print(ipconf)
-
-
-#netstat -e
-def nestat():
-    nestate = subprocess.run(['netstat', '-e'], stdout=subprocess.PIPE)
-    print(nestate)
-
-
-#netsh wlan show interface
-def wlanif():
-    iface = subprocess.run(['netsh', 'wlan', 'show', 'interface'], stdout=subprocess.PIPE)
-    print(iface)
+#Сохранение json в файл для отладки
+def save_to_file(json_data):
+    report = "report.json"
+    file = open(report, mode='w', encoding='UTF-8')
+    json.dump(json_data, file)
+    file.close()
 
 
 #запуск диагностики при клике на кнопку
 @eel.expose
 def diag_start(agr):
     #agreement_check(agr)
-    city = get_city(agr)
-    #cmd_ping_ya()
-    #cmd_ping_dns()
+    #ping_ya()
+    #ping_dns()
     #tracert_mail()
     #tracert_vk()
-    tasklist()
-    ipconfig()
-    nestat()
-    wlanif()
-    print(agr)
-    print(city)
+    #nestat()
+    #wlanif()
+    #print()
+    #print(tracert_vk())
+    print(ping_gw())
+    print(json.loads
+                (json_code
+                              (
+                               agr,
+                               get_city(agr),
+                               os_name(),
+                               tasklist(),
+                               ipconfig(),
+                               nestats(),
+                               nestate(),
+                               check_host(),
+                               wlanif()
+                               )
+                )
+          )
+    #ave_to_file(json_code(agr, city, task, ipconf, netstate))
     return agr
 
 eel.start("main.html", size=(500, 600))
