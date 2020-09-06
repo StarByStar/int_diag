@@ -63,19 +63,31 @@ def get_city(agr, cities):
 
 
 #Кодирование в JSON формат
-def json_code(agr, city, os_name, task, ipconf, netstats, netstate, check_host, wlan):
+def json_code(agr, city, os_name, ping_dns, ping_ya, ping_gw, tracert_mail,
+              tracert_vk, task, ipconf, netstats, netstate, check_host, wlan, iperf, wireless_console):
     report_struct = {
         "agreement": agr,
         "city": city,
         "os version": os_name,
+        "ping dns": ping_dns,
+        "ping yandex.ru": ping_ya,
+        "ping gw":ping_gw,
+        "tracert mail.ru": tracert_mail,
+        "tracert vk.com": tracert_vk,
         "tasklist": task,
         "ipconfig": ipconf,
         "netstat -s": netstats,
         "netstat -e": netstate,
         "host": check_host,
-        "netsh wlan": wlan
+        "netsh wlan": wlan,
+        "iperf": iperf,
+        "wireless console": wireless_console
     }
     jsonData = json.dumps(report_struct)
+    report = "report.json"
+    file = open(report, mode='w', encoding='UTF-8')
+    json.dump(report_struct, file)
+    file.close()
     return jsonData
 
 
@@ -91,29 +103,23 @@ def save_to_file(json_data):
 @eel.expose
 def diag_start(agr):
     #agreement_check(agr)
-    #ping_ya()
-    #ping_dns()
-    #tracert_mail()
-    #tracert_vk()
-    #print(tracert_vk())
-    #print(ping_gw())
-    print(ping_dns(get_city(agr, cities)[1]))
-    print(json.loads
-                    (json_code
-                                  (
-                                   agr,
-                                   get_city(agr, cities)[0],
-                                   os_name(),
-                                   tasklist(),
-                                   ipconfig(),
-                                   nestats(),
-                                   nestate(),
-                                   check_host(),
-                                   wlanif()
-                                   )
-                    )
-              )
-    #save_to_file(json_code(agr, city, task, ipconf, netstate))
+    json_code(agr,
+              get_city(agr, cities)[0],
+              os_name(),
+              ping(get_city(agr, cities)[1]),
+              ping('ya.ru'),
+              ping_gw(),
+              tracert('mail.ru'),
+              tracert('vk.com'),
+              tasklist(),
+              ipconfig(),
+              nestats(),
+              nestate(),
+              check_host(),
+              wlanif(),
+              iperf(get_city(agr, cities)[2]),
+              wireless_console()
+               )
     return agr
 
 
