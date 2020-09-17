@@ -1,1 +1,1 @@
-create exe app: Auto PY to EXE
+python -m eel  main.py web --onefile --add-data iperf.exe;. --add-data WirelessNetConsole.exe;.

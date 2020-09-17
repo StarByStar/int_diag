@@ -1,7 +1,13 @@
+import subprocess
 import eel
 import json
 import requests
+import os
+import sys
+import platform
+import pathlib
 from diagnostic import *
+
 
 # Справочник для хранения ключа (по № договора),
 # города, имени st сервера, iperf сервера
@@ -53,6 +59,25 @@ def agreement_check(agr):
     assert agr.isdigit(), "Номер договора должен быть положительным числом"
     assert len(str(agr)) == 12, "Номер договора должен состоять из 12 чисел"
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
+
+# Получение статистики из wirelessnetconsole
+def wireless_console():
+    cmd = resource_path("WirelessNetConsole.exe")
+    process = subprocess.check_output([cmd], shell=True)
+    return str(process)
+
+
+# Замер скорости по iperf
+def iperf(server, timeout='5'):
+    cmd = resource_path("iperf.exe")
+    process = subprocess.check_output([cmd, '-t', timeout, '-w', '2M', '-c', server], shell=True)
+    return str(process)
+
 
 # Определение города, dns, iperf Клиента по № договора
 def get_city(agr, cities):
@@ -84,10 +109,10 @@ def json_code(agr, city, os_name, ping_dns, ping_ya, ping_gw, tracert_mail,
         "wireless console": wireless_console
     }
     jsonData = json.dumps(report_struct)
-    report = "report.json"
-    file = open(report, mode='w', encoding='UTF-8')
-    json.dump(report_struct, file)
-    file.close()
+    #report = "report.json"
+    #file = open(report, mode='w', encoding='UTF-8')
+    #json.dump(report_struct, file)
+    #file.close()
     return jsonData
 
 
@@ -103,7 +128,8 @@ def save_to_file(json_data):
 @eel.expose
 def diag_start(agr):
     #agreement_check(agr)
-    json_code(agr,
+
+    return json_code(agr,
               get_city(agr, cities)[0],
               os_name(),
               ping(get_city(agr, cities)[1]),
@@ -120,7 +146,6 @@ def diag_start(agr):
               iperf(get_city(agr, cities)[2]),
               wireless_console()
                )
-    return agr
 
 
 eel.start("main.html", size=(500, 600))
